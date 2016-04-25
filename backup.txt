@@ -1,0 +1,146 @@
+ <?php
+                $t2=$_SESSION["uname"];
+$t2="mysore";
+               $t31=strtolower($t2);//station name convertion to lowercase
+        $con=mysql_connect("localhost","sharanu","sugoor123");//connection with database
+        if(!$con)
+          {
+	          echo"<a href='front.html'>"."try Again"."</a>";
+	
+      	 }
+	      mysql_select_db("rail") or die("not fnd");
+        $sql="SELECT * FROM location WHERE place='$t31'";//query for intialization location of station
+        $res1=mysql_query($sql);
+        $k1=0;
+                while($row=mysql_fetch_array($res1))
+              {
+
+	             $long12[]=$row[2];
+
+	 
+             	 $lat1[]=$row[3];
+	 
+	           $k1++;
+            }
+       //for map image retrive from database
+            $t=$_SESSION["t"];
+              $f1=$_SESSION["f1"];
+            $va=$_SESSION["va"];
+        //comparing given choice faults
+              if(!(strcmp($va,"all")))
+             {
+            $con=mysql_connect("localhost","sharanu","sugoor123");
+        if(!$con)
+          {
+	          echo"<a href='front.html'>"."try Again"."</a>";
+	
+      	    }
+	      mysql_select_db("rail") or die("not fnd");
+         $sql="SELECT * FROM images WHERE fdate BETWEEN DATE('$t') AND DATE('$f1') AND (location='$t31')";   
+            
+            
+            
+           }
+         
+       else
+        {
+             $con=mysql_connect("localhost","sharanu","sugoor123");
+        if(!$con)
+          {
+	          echo"<a href='front.html'>"."try Again"."</a>";
+	
+      	    }
+	      mysql_select_db("rail") or die("not fnd");
+            
+        
+            
+              $sql="SELECT * FROM images WHERE ((faults='$va')AND fdate BETWEEN DATE('$t') AND DATE('$f1') AND (location='$t3'))";
+            $k12=1;
+        }
+         $res12=mysql_query($sql);
+        $k1=0;
+        if(!$res12)
+        {
+            echo "hi";
+        }
+
+        
+else
+{
+ $k=0;
+ while($row=mysql_fetch_array($res12))
+ {
+
+	 $long1[]=$row[3];
+	 $image12[]=base64_encode($row[2]);
+	 
+	 $lat[]=$row[4];
+	 
+	 $fal[]=$row[5];
+	   $val1[]=$row[6];
+	 	 $k++;
+ }
+   
+  
+   $longa = json_encode($long1);
+echo "var js = ". $longa . ";\n";
+         $lata = json_encode($lat);
+echo "var as = ". $lata . ";\n";
+         $image123 = json_encode($image12);
+echo "var img = ". $image123 . ";\n";
+         $fal1 = json_encode($fal);
+echo "var fau = ". $fal1 . ";\n";
+         $val12= json_encode($val1);
+echo "var val2= ". $val12 . ";\n";
+        
+} 
+        
+        
+        ?>
+    
+              /*  var a='<?php //echo $k; ?>';
+    
+       /* var longi='<?php //echo// $long12[0];?>';
+        var lati='<?php //echo $lat1[0]; ?>';
+               alert(longi);
+        
+        var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 18,
+      center: new google.maps.LatLng(longi,lati),
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+          
+               /*var infowindow = new google.maps.InfoWindow({content:"hello",
+maxWidth: 1000
+  });;
+var char1,char2;
+    var cs=new Array();
+    var marker, i;
+var image1=new Array();
+    for (i = 0; i < (js.length); i++) { 
+      marker = new google.maps.Marker({
+        position: new google.maps.LatLng(js[i],as[i]),
+    
+          map: map
+          
+      });
+	  
+
+ image1[i]= new Image();
+image1[i].src ='data:image;base64,'+img[i];
+       // document.write(image1[i].src);
+image1[i].width=450;
+image1[i].height=200;
+char1=image1[i];
+         cs[i] = "<div class='container'>"+'<img src='+image1[i].src+' />'+"</pre>"+"<hr>"+"<h4>Location:-"+fau[i]+"</h4>"+"</div>"+"<h4> Fault:-<input type='submit'class='btn btn-warning' value="+val2[i]+">"+"</h4>"+"<hr>"+" <h3 align='center'>Not Faulty Image </h3> "+"<input type='submit' class='btn btn-danger' value='Delete it '>";
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+        return function() {
+          infowindow.setContent(cs[i]);
+           
+          infowindow.open(map, marker);
+        }
+      })(marker, i));
+    }
+       
+
+    }
